@@ -18,3 +18,5 @@ add_executable(hello_bus
 )
 
 target_link_libraries(hello_bus PRIVATE md-bus-engine)
+
+add_compile_definitions(BUS_DEBUG)
