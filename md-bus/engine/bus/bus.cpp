@@ -14,7 +14,7 @@ EventBus::EventBus(size_t ingress_cap_, size_t per_sub_cap_)
 
     log_info("EventBus starting (ingress_cap = {}, per_sub_cap = {})",
             ingress_cap_, per_sub_cap_);
-
+ 
     reactor_ = std::thread([this]{reactor_loop();});
 }
 
