@@ -1,11 +1,16 @@
 // engine/examples/hello_bus.cpp
 #include <fmt/core.h>
+
 #include "../bus/bus.hpp"
 #include "../common/event.hpp"
 #include "../io/timer.hpp"
+#include "../record/recorder.hpp"
+#include "../common/event_io.hpp"
 
 int main() {
   md::EventBus bus(/*ingress*/1024, /*per-sub*/1024);
+
+  md::EventRecorder recorder("md_events.log");
 
     auto sub_ticks = bus.subscribe(md::Topic::MD_TICK, [](const md::Event e){
         if(std::holds_alternative<md::Tick>(e.p)){
@@ -32,6 +37,10 @@ int main() {
       fmt::print("[MON ] seq = {} topic = {}\n",
                 e.h.seq,
                 static_cast<int>(e.h.topic));
+    });
+
+    auto sub_rec = bus.subscribe_all([&recorder](const md::Event& e){
+        recorder.on_event(e);
     });
 
     md::SimpleTimer hb_timer(
@@ -67,8 +76,11 @@ int main() {
   bus.unsubscribe(sub_all);
   bus.unsubscribe(sub_ticks);
   bus.unsubscribe(sub_logs);
+  bus.unsubscribe(sub_rec);
+
   bus.stop();
 
+  recorder.flush();
   bus.print_stats();
 
   return 0;
