@@ -5,6 +5,8 @@
 #include <condition_variable>
 #include <optional>
 
+
+// A thread-safe bounded queue implementation
 namespace md{
 
 template <typename T>
