@@ -10,7 +10,7 @@ enum class LogLevel {
     Debug,
     Info,
     Warn,
-    Error,  
+    Error
 };
 
 inline const char* to_string(LogLevel lvl) {
