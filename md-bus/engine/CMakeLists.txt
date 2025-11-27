@@ -2,6 +2,7 @@ cmake_minimum_required(VERSION 3.16)
 
 add_library(md-bus-engine STATIC
   bus/bus.cpp
+  record/recorder.cpp
 )
 
 target_include_directories(md-bus-engine
