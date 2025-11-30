@@ -10,7 +10,7 @@
 int main() {
   md::EventBus bus(/*ingress*/1024, /*per-sub*/1024);
 
-  md::EventRecorder recorder("md_events.log");
+  md::EventRecorder recorder("logs/md_events.log");
 
     auto sub_ticks = bus.subscribe(md::Topic::MD_TICK, [](const md::Event e){
         if(std::holds_alternative<md::Tick>(e.p)){
@@ -39,6 +39,10 @@ int main() {
                 static_cast<int>(e.h.topic));
     });
 
+<<<<<<< HEAD
+=======
+    // Recorder subscription to log all events to file
+>>>>>>> upstream/main
     auto sub_rec = bus.subscribe_all([&recorder](const md::Event& e){
         recorder.on_event(e);
     });

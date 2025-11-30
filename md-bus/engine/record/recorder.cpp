@@ -4,6 +4,7 @@ namespace md {
 
 EventRecorder::EventRecorder(const std::string& path)
     :path_{path} {
+        std::filesystem::create_directories("logs");
         out_.open(path_, std::ios::out | std::ios::trunc);
         if(!out_){
             log_error("EventRecorder : failed to open file '{}'",path_);
