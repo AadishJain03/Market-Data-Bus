@@ -65,7 +65,6 @@ public:
     void print_stats() const;
 
 
-
 };
 }
 

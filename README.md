@@ -13,6 +13,10 @@ cmake ..
 cmake --build .
 ```
 
+```bash
+./engine/hello_bus
+```
+
 ## Run tests / examples
 
 After building, binaries are in the `build/` and `build/engine` subfolders.
@@ -36,7 +40,11 @@ git push -u origin main
 ```
 
 That's it! Once pushed, your code will be visible on GitHub and you can enable CI, add issues, and manage collaborators.
+
 # Market-Data-Bus
+
 # Market-Data-Bus
+
 # Market-Data-Bus
+
 # Market-Data-Bus
