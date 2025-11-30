@@ -39,10 +39,7 @@ int main() {
                 static_cast<int>(e.h.topic));
     });
 
-<<<<<<< HEAD
-=======
     // Recorder subscription to log all events to file
->>>>>>> upstream/main
     auto sub_rec = bus.subscribe_all([&recorder](const md::Event& e){
         recorder.on_event(e);
     });
