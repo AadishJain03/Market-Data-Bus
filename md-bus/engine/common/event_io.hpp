@@ -41,7 +41,7 @@ inline std::string serialize_payload(const Payload& p){
         const auto& t = std::get<Tick>(p);
         std::string s;
         s.reserve(64);
-        s.append("TICK| ");
+        s.append("TICK|");
         s.append(t.symbol);
         s.push_back('|');
         s.append(std::to_string(t.pq));
@@ -54,7 +54,7 @@ inline std::string serialize_payload(const Payload& p){
         const auto& msg = std::get<std::string>(p);
         std::string s;
         s.reserve(16 + msg.size());
-        s.append("LOG| ");
+        s.append("LOG|");
         s.append(msg);
         return s;
     }
@@ -80,4 +80,71 @@ inline std::string serialize_event(const Event& e){
     s.append(serialize_payload(e.p));
     return s;
 }
+
+//parsing helpers 
+
+inline std::vector<std::string_view> split_sv(std::string_view s, char delim) {
+    std::vector<std::string_view> out ;
+    size_t start = 0;
+    while(start <= s.size()){
+        size_t pos = s.find(delim, start);
+        if(pos == std::string_view::npos){
+            out.emplace_back(s.substr(start));
+            break;
+        }
+        out.emplace_back(s.substr(start, pos - start));
+        start = pos + 1;
+    }
+    return out ;
+}
+
+inline Payload parse_payload(std::string_view s) {
+    if(s == "-" || s.empty()) return  std::monostate{};
+    if(s.rfind("TICK|", 0) == 0) {
+        auto rest = s.substr(5);
+        auto parts = split_sv(rest, '|');
+        if(parts.size() < 3){
+            return std::monostate{};
+        }
+        Tick t;
+        t.symbol = std::string(parts[0]);
+        try{
+            t.pq = std::stod(std::string(parts[1]));
+            t.qty = static_cast<uint32_t>(std::stoul(std::string(parts[2])));
+        }catch(...) {
+            return std::monostate{};
+        }
+        return t;
+    }
+
+    if(s.rfind("LOG|", 0) == 0){
+        auto msg = s.substr(4);
+        return std::string(msg);
+    }
+    return std::string(s);
+}
+
+inline bool parse_event(std::string_view line, Event& out) {
+    auto parts = split_sv(line, ',');
+    if(parts.size() < 4){
+        return false;
+    }
+
+    try {
+        out.h.seq = static_cast<uint64_t>(std::stoull(std::string(parts[0])));
+        out.h.ts_ns = static_cast<uint64_t>(std::stoull(std::string(parts[1])));
+    } catch (...) {
+        return false;
+    }
+
+    Topic t;
+    if(!topic_from_string(parts[2], t)) {
+        return false;
+    }
+    out.h.topic = t;
+
+    out.p = parse_payload(parts[3]);
+    return true;
+}
+
 }
