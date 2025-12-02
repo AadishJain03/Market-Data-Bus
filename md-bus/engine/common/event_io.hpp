@@ -140,7 +140,7 @@ inline bool parse_event(std::string_view line, Event& out) {
     try {
         out.h.seq = static_cast<uint64_t>(std::stoull(std::string(parts[0])));
         out.h.ts_ns = static_cast<uint64_t>(std::stoull(std::string(parts[1])));
-    } catch (...) {
+    } catch (...) { // catch all handler 
         return false;
     }
 

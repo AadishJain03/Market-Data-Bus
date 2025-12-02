@@ -44,8 +44,8 @@ int main() {
     // Choose one:
     // replayer.replay_fast(bus);
     // replayer.replay_realtime(bus);
-        replayer.replay_realtime(bus);
-    // replayer.replay_speed(bus, 2.0);  // 2x speed replay
+        // replayer.replay_realtime(bus);
+    replayer.replay_speed(bus, 2.0);  // 2x speed replay
 
     // Give subscribers a moment to drain
     std::this_thread::sleep_for(200ms);
