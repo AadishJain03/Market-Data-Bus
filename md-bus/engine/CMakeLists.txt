@@ -44,4 +44,12 @@ target_link_libraries(example_replay_filters
     PRIVATE md-bus-engine  # adjust to your main library target name
 )
 
+add_executable(example_strategy_hello
+    examples/strategy_hello.cpp
+)
+
+target_link_libraries(example_strategy_hello
+    PRIVATE md-bus-engine
+)
+
 add_compile_definitions(BUS_DEBUG)
