@@ -13,6 +13,8 @@ inline std::string to_string(Topic t){
         case Topic::MD_TICK : return "MD_TICK";
         case Topic::LOG : return "LOG";
         case Topic::HEARTBEAT : return "HEARTBEAT";
+        case Topic::BAR_1S : return "BAR_1S";
+        case Topic::BAR_1M : return "BAR_1M";
     }
     return "UNKNOWN";
 }
@@ -22,6 +24,8 @@ inline bool topic_from_string(std::string_view s, Topic& out){
     if(s == "MD_TICK") {out = Topic::MD_TICK; return true;}
     if(s == "LOG") {out = Topic::LOG; return true;}
     if(s == "HEARTBEAT") {out = Topic::HEARTBEAT; return true;}
+    if(s == "BAR_1S") {out = Topic::BAR_1S; return true;}
+    if(s == "BAR_1M") {out = Topic::BAR_1M; return true;}
     return false;
 }
 

@@ -10,10 +10,23 @@ enum class Topic : uint8_t {
     LOG = 0,
     MD_TICK = 1,
     HEARTBEAT = 2, 
+    BAR_1S = 3,
+    BAR_1M = 4
     // MD_TRADE,
     // ORDER,
     // BOOK_UPDATE,
     // SYSTEM
+};
+
+struct Bar {
+    std::string symbol;
+    double open{0.0};
+    double close{0.0};
+    double high{0.0};
+    double low{0.0};
+    int volume{0};
+    uint64_t start_ts_ns{0};
+    uint64_t end_ts_ns{0};
 };
 
 struct Header {
@@ -28,7 +41,7 @@ struct Tick {
     uint32_t qty{0};
 };
 
-using Payload = std::variant<std::monostate, Tick, std::string>;
+using Payload = std::variant<std::monostate, Tick, std::string, Bar>;
 
 struct Event {
     Header h;

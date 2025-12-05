@@ -125,7 +125,7 @@ void EventBus::reactor_loop() {
         }
 
 #ifdef BUS_DEBUG
-        log_debug("[REACTOR] seq = {} topic = {}\n",
+        log_debug("[REACTOR] seq = {} topic = {}",
         ev.h.seq,
         static_cast<int>(ev.h.topic));
 #endif
@@ -150,7 +150,7 @@ void EventBus::reactor_loop() {
             topic_counts_[idx].fetch_add(1, std::memory_order_relaxed);
         }
 #ifdef BUS_DEBUG
-        log_debug("[REACTOR-DRAIN] seq={} topic={}\n",
+        log_debug("[REACTOR-DRAIN] seq={} topic={}",
                    ev.h.seq,
                    static_cast<int>(ev.h.topic));
 #endif
