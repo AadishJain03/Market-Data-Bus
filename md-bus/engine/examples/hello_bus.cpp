@@ -52,10 +52,10 @@ int main() {
         }
     ); hb_timer.start();
 
-  for (int i = 0; i < 5; ++i) {
+  for (int i = 0; i < 50; ++i) {
     md::Tick t{
         .symbol = "NIFTY", 
-        .pq = 22500.0 + i, 
+        .pq = 22500.0 + std::sin(i * 0.2) * 5.0,
         .qty = static_cast<uint32_t>(100 + i)
     };
     md::Header h{};

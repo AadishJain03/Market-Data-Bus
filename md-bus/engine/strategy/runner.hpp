@@ -27,10 +27,17 @@ namespace md {
  *   } // runner unsubscribes here
 */
 
+enum class StrategyMode {
+    TickOnly,
+    BarOnly,
+    Mixed,
+};
+
 class StrategyRunner {
 private :
     EventBus& bus_;
     IStrategy& strat_;
+    StrategyMode mode_;
 
     std::size_t sub_ticks_{};
     std::size_t sub_logs_{};
@@ -38,19 +45,21 @@ private :
     std::size_t sub_bar_{};
 
 public :
-    StrategyRunner(EventBus& bus, IStrategy& strat)
-        :bus_{bus}, strat_{strat} 
+    StrategyRunner(EventBus& bus, IStrategy& strat, StrategyMode mode = StrategyMode::Mixed)
+        :bus_{bus}, strat_{strat}, mode_{mode}
     {
         //Tick
-        sub_ticks_ = bus.subscribe(Topic::MD_TICK, [this](const Event& e){
-            if(std::holds_alternative<Tick>(e.p)){
-                const auto& t = std::get<Tick>(e.p);
-                strat_.on_tick(t, e);
-            }else {
-                log_warn("StrategyRunner: MD_TICK event without Tick payload (seq={})",
-                             e.h.seq);
-            }
-        });
+        if(mode_ != StrategyMode::BarOnly){
+            sub_ticks_ = bus.subscribe(Topic::MD_TICK, [this](const Event& e){
+                if(std::holds_alternative<Tick>(e.p)){
+                    const auto& t = std::get<Tick>(e.p);
+                    strat_.on_tick(t, e);
+                }else {
+                    log_warn("StrategyRunner: MD_TICK event without Tick payload (seq={})",
+                                 e.h.seq);
+                }
+            });
+        }
 
         //LOG
         sub_logs_ = bus_.subscribe(Topic::LOG,
@@ -66,16 +75,18 @@ public :
             [this](const Event& e) {
                 strat_.on_heartbeat(e);
         });
-
-        sub_bar_ = bus_.subscribe(Topic::BAR_1S, [this](const Event& e){
-            if(!std::holds_alternative<Bar>(e.p)) {
-                log_warn("StrategyRunner: BAR_1S event without Bar payload (seq={})",
-                         e.h.seq);
-                return;
-            }
-            const Bar& b = std::get<Bar>(e.p);
-            strat_.on_bar(b, e);
-        });
+        
+        if(mode_ != StrategyMode::TickOnly){
+            sub_bar_ = bus_.subscribe(Topic::BAR_1S, [this](const Event& e){
+                if(!std::holds_alternative<Bar>(e.p)) {
+                    log_warn("StrategyRunner: BAR_1S event without Bar payload (seq={})",
+                             e.h.seq);
+                    return;
+                }
+                const Bar& b = std::get<Bar>(e.p);
+                strat_.on_bar(b, e);
+            });
+        }
     }
     ~StrategyRunner() {
         // Unsubscribe in destructor; assumes bus_ is still alive here.
@@ -83,6 +94,7 @@ public :
         bus_.unsubscribe(sub_ticks_);
         bus_.unsubscribe(sub_logs_);
         bus_.unsubscribe(sub_hb_);
+        bus_.unsubscribe(sub_bar_);
     }
     StrategyRunner(const StrategyRunner&) = delete;
     StrategyRunner& operator=(const StrategyRunner&) = delete;

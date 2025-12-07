@@ -207,8 +207,8 @@ int main() {
 
         
     md::MultiStrategy multi;
-    multi.add_strategy(&strat1);
-    multi.add_strategy(&strat2);
+    multi.add_strategy(&strat1, md::StrategyMode::TickOnly);
+    multi.add_strategy(&strat2, md::StrategyMode::TickOnly);
 
     //added scope to this so that runner gets destroyed before 
     //bus

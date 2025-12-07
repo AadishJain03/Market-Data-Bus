@@ -74,4 +74,12 @@ add_executable(example_bar_hello
 target_link_libraries(example_bar_hello
     PRIVATE md-bus-engine
 )
+
+add_executable(example_bar_momentum
+    examples/bar_momentum.cpp
+)
+
+target_link_libraries(example_bar_momentum
+    PRIVATE md-bus-engine
+)
 add_compile_definitions(BUS_DEBUG)
